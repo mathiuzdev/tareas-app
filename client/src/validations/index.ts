@@ -28,7 +28,7 @@ export const registerValidationSchema = Yup.object({
     .max(50)
     .matches(
       new RegExp(
-        "^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]+$"
+        "^(?=.*[A-Z])(?=.*\\d).*$" 
       ),
       "Password must contain at least one uppercase letter and one number"
     )

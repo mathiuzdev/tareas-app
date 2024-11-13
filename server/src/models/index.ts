@@ -2,7 +2,6 @@ import User from './User';
 import Task from './Task';
 import Tag from './Tag';
 import TaskTag from './TaskTag';
-
 export { User, Task, Tag, TaskTag };
 
 User.hasMany(Task, { foreignKey: 'user_id' });

@@ -26,7 +26,7 @@ describe("POST /api/user/register", () => {
   it("should register a new user successfully", async () => {
     const newUser = {
       username: "waera amor",
-      email: "matiarar@gmail.com",
+      email: "luna@gmail.com",
       password: "Jeropita123$",
     };
 
@@ -59,17 +59,22 @@ describe("POST /api/user/register", () => {
 
   it("should return 409 if email is already registered", async () => {
     const existingUser = {
-      username: "existinguser",
-      email: "test@example.com",
-      password: "password123",
+      username: "mati amor",
+      email: "mati@gmail.com",
+      password: "123456789", 
     };
+  
 
     User.findOne = jest.fn().mockResolvedValue(existingUser);
-
+  
     const response = await request(app)
       .post("/api/user/register")
-      .send(existingUser);
-
+      .send({
+        username: "newuser", 
+        email: "mati@gmail.com", 
+        password: "newPassword123",
+      });
+  
     expect(response.status).toBe(409);
     expect(response.body).toHaveProperty("error", "Email already registered");
   });

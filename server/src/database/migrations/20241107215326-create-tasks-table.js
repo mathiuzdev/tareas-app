@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('tasks', {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.createTable("tasks", {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -30,10 +30,10 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users', // Nombre de la tabla de la cual depende
-          key: 'id',
+          model: "users",
+          key: "id",
         },
-        onDelete: 'CASCADE', // Si el usuario es eliminado, las tareas también se eliminarán
+        onDelete: "CASCADE",
       },
       created_at: {
         type: Sequelize.DATE,
@@ -46,7 +46,7 @@ module.exports = {
     });
   },
 
-  async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('tasks');
-  }
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable("tasks");
+  },
 };

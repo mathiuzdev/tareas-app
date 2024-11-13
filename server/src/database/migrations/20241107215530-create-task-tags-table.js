@@ -1,24 +1,24 @@
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('task_labels', {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.createTable("task_tags", {
       task_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'tasks', 
-          key: 'id',
+          model: "tasks",
+          key: "id",
         },
         primaryKey: true,
       },
-      label_id: {
+      tag_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'labels', 
-          key: 'id',
+          model: "tags",
+          key: "id",
         },
         primaryKey: true,
       },
@@ -33,7 +33,7 @@ module.exports = {
     });
   },
 
-  async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('task_labels');
-  }
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable("task_tags");
+  },
 };

@@ -1,90 +1,131 @@
 import { Request, Response } from "express";
 import Task from "../models/Task";
-import { Label, TaskLabel } from "../models";
+import { Tag, TaskTag } from "../models";
+import { TaskRequest } from "../types/requests/TaskRequest";
+import { taskSchema } from "../validations/taskValidations";
+import { TaskService } from "../services/taskService";
+import {
+  buildStatusFilter,
+  normalizeTagIds,
+  buildTagsInclude,
+  buildTagsHavingClause,
+} from "../utils/taskFilters";
 
 export const getTasks = async (req: Request, res: Response) => {
   try {
-    const tasks = await Task.findAll();
+    const status = req.query.status as string | undefined;
+    const tagIds = normalizeTagIds(
+      req.query.tagId as string | string[] | undefined
+    );
+    const whereClause = buildStatusFilter(status);
 
-    const tasksLabel = await TaskLabel.findAll({
-      where: { task_id: tasks.map((task) => task.id) },
+    const tasks = await Task.findAll({
+      where: whereClause,
+      include: [buildTagsInclude(tagIds)],
+      group: ["Task.id"],
+      having: buildTagsHavingClause(tagIds),
     });
 
-    const labels = await Label.findAll();
+    const tasksWithAllTags = await TaskService.getTasksWithAllTags(
+      tasks.map((task) => task.id)
+    );
 
-    const tasksWithLabels = tasks.map((task) => {
-      const taskLabels = tasksLabel
-        .filter((taskLabel) => taskLabel.task_id === task.id)
-        .map((taskLabel) => {
-          return labels.find((label) => label.id === taskLabel.label_id);
-        });
-      return { ...task.toJSON(), labels: taskLabels };
-    });
-
-    res.json(tasksWithLabels);
+    res.json(tasksWithAllTags);
   } catch (error) {
-    res.status(500).json({ error: "Error al obtener las tareas" });
+    console.error("Error getting tasks:", error);
+    res.status(500).json({
+      errorMessage: "Error getting tasks",
+      error,
+    });
   }
 };
 
-export const createTask = async (req: Request, res: Response) => {
+export const createTask = async (
+  req: TaskRequest,
+  res: Response
+): Promise<void> => {
+  const { error } = taskSchema.validate(req.body);
+
+  if (error) {
+    res.status(400).json({ error: error.details[0].message });
+    return;
+  }
+
   try {
-    const { title, description, due_date, status, user_id } = req.body;
-    const task = await Task.create({
-      title,
-      description,
-      due_date,
-      status,
-      user_id,
-    });
-    res.status(201).json(task);
+    const { title, description, dueDate, status, tags } = req.body;
+
+    if (req.user?.id) {
+      const userId = req.user.id;
+
+      const task = await Task.create({
+        title,
+        description,
+        dueDate,
+        status,
+        userId,
+      });
+
+      if (tags && tags.length > 0) {
+        const taskTags = tags.map((tagId: number) => ({
+          taskId: task.id,
+          tagId: tagId,
+        }));
+
+        await TaskTag.bulkCreate(taskTags);
+      }
+
+      res.status(201).json(task);
+    }
   } catch (error) {
-    res.status(500).json({ errorMessage: "Error al crear la tarea", error });
+    res.status(500).json({ errorMessage: "Error creating task", error });
   }
 };
 
-export const addLabelToTask = async (req: Request, res: Response) => {
+export const addTagToTask = async (req: Request, res: Response) => {
   try {
-    const { label_id, task_id } = req.body;
+    const { tagId, taskId } = req.body;
 
-    if (!label_id || !task_id) {
-      res.status(400).json({ error: "Faltan datos" });
+    if (!tagId || !taskId) {
+      res.status(400).json({ error: "Missing data" });
+      return;
     }
 
-    const label = await Label.findByPk(label_id);
-    const task = await Task.findByPk(task_id);
+    const tag = await Tag.findByPk(tagId);
+    const task = await Task.findByPk(taskId);
 
-    if (!label || !task) {
-      res.status(404).json({ error: "Etiqueta o tarea no encontrada" });
+    if (!tag || !task) {
+      res.status(404).json({ error: "Tag or task not found" });
+      return;
     }
 
-    TaskLabel.create({ task_id, label_id });
-    res.json({ message: "Etiqueta añadida a la tarea" });
+    await TaskTag.create({ taskId, tagId });
+    res.json({ message: "Tag added to task" });
   } catch (error) {
-    res.status(500).json({ error: "Error al añadir la etiqueta a la tarea" });
+    res.status(500).json({ error: "Error adding tag to task" });
   }
 };
 
-export const removeLabelFromTask = async (req: Request, res: Response) => {
+export const removeTagFromTask = async (req: Request, res: Response) => {
   try {
-    const { label_id, task_id } = req.body;
+    const { tagId, taskId } = req.body;
 
-    if (!label_id || !task_id) {
-       res.status(400).json({ error: "Faltan datos" }); 
+    if (!tagId || !taskId) {
+      res.status(400).json({ error: "Missing data" });
+      return;
     }
 
-    const label = await Label.findByPk(label_id);
-    const task = await Task.findByPk(task_id);
+    const tag = await Tag.findByPk(tagId);
+    const task = await Task.findByPk(taskId);
 
-    if (!label || !task) {
-       res.status(404).json({ error: "Etiqueta o tarea no encontrada" }); 
+    if (!tag || !task) {
+      res.status(404).json({ error: "Tag or task not found" });
+      return;
     }
 
-   const prueba = await TaskLabel.destroy({ where: { task_id, label_id } });
-   console.log(prueba);
-   res.json({ message: "Etiqueta eliminada de la tarea" }); 
+    await TaskTag.destroy({ where: { taskId, tagId } });
+    res.json({ message: "Tag removed from task" });
   } catch (error) {
-     res.status(500).json({ error: "Error al eliminar la etiqueta de la tarea" });
+    res.status(500).json({ error: "Error removing tag from task" });
   }
 };
 
@@ -94,39 +135,52 @@ export const getTaskById = async (req: Request, res: Response) => {
     if (task) {
       res.json(task);
     } else {
-      res.status(404).json({ error: "Tarea no encontrada" });
+      res.status(404).json({ error: "Task not found" });
     }
   } catch (error) {
-    res.status(500).json({ error: "Error al obtener la tarea" });
+    res.status(500).json({ error: "Error retrieving task" });
   }
 };
 
 export const updateTask = async (req: Request, res: Response) => {
   try {
-    const { title, description, due_date, status, user_id } = req.body;
+    const { title, description, dueDate, status, userId } = req.body;
     const task = await Task.findByPk(req.params.id);
     if (task) {
-      await task.update({ title, description, due_date, status, user_id });
+      await task.update({ title, description, dueDate, status, userId });
       res.json(task);
     } else {
-      res.status(404).json({ error: "Tarea no encontrada" });
+      res.status(404).json({ error: "Task not found" });
     }
   } catch (error) {
-    res.status(500).json({ error: "Error al actualizar la tarea" });
+    res.status(500).json({ error: "Error updating task" });
   }
 };
 
-export const deleteTask = async (req: Request, res: Response) => {
+export const deleteTask = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
-    const task = await Task.findByPk(req.params.id);
-
+    const task = await Task.findByPk(req.params.id, {
+      include: {
+        model: Tag,
+        as: "tags",
+        through: {
+          attributes: [],
+        },
+      },
+    });
     if (!task) {
-      res.status(404).json({ error: "Tarea no encontrada" });
+      res.status(404).json({ error: "Task not found" });
+      return;
     }
 
-    await TaskLabel.destroy({ where: { task_id: req.params.id } });
-    res.json({ message: "Tarea eliminada" });
+    await TaskTag.destroy({ where: { taskId: req.params.id } });
+
+    await task?.destroy();
+    res.json({ message: "Task deleted" });
   } catch (error) {
-    res.status(500).json({ error: "Error al eliminar la tarea" });
+    res.status(500).json({ errorMessage: "Error deleting task", error });
   }
 };

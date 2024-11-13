@@ -1,5 +1,4 @@
-import labelRoutes from './labelRoutes';
-import taskRoutes from './taskRoutes';
-import userRoutes from './userRoutes';
-
-export { labelRoutes, taskRoutes, userRoutes };
+import tagRoutes from "./tagRoutes";
+import taskRoutes from "./taskRoutes";
+import userRoutes from "./userRoutes";
+export { tagRoutes, taskRoutes, userRoutes };

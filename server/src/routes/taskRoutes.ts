@@ -1,14 +1,23 @@
-import express from 'express';
-import { getTasks, createTask, getTaskById, updateTask, deleteTask, addLabelToTask, removeLabelFromTask} from '../controllers/taskController';
+import express from "express";
+import {
+  getTasks,
+  createTask,
+  getTaskById,
+  updateTask,
+  deleteTask,
+  addTagToTask,
+  removeTagFromTask,
+} from "../controllers/taskController";
+import { authenticateJWT } from "../middleware/authMiddleware";
 
 const router = express.Router();
 
-router.get('/tasks', getTasks);
-router.post('/tasks', createTask);
-router.post('/tasks/addLabel', addLabelToTask);
-router.get('/tasks/:id', getTaskById);
-router.put('/tasks/:id', updateTask);
-router.delete('/tasks/:id', deleteTask);
-router.patch('/tasks/removeLabel', removeLabelFromTask);
+router.get("/tasks", authenticateJWT, getTasks);
+router.post("/tasks", authenticateJWT, createTask);
+router.post("/tasks/addTag", authenticateJWT, addTagToTask);
+router.get("/tasks/:id", authenticateJWT, getTaskById);
+router.put("/tasks/:id", authenticateJWT, updateTask);
+router.delete("/tasks/:id", authenticateJWT, deleteTask);
+router.patch("/tasks/removeTag", authenticateJWT, removeTagFromTask);
 
 export default router;

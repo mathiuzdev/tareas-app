@@ -8,7 +8,7 @@ export const registerSchema = Joi.object({
     .max(50)
     .pattern(
       new RegExp(
-        "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$"
+        "^(?=.*[A-Z])(?=.*\\d).*$" 
       )
     )
     .required(),

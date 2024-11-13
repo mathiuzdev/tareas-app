@@ -1,11 +1,18 @@
-import express from 'express';
-import { userRoutes, taskRoutes, labelRoutes } from './routes/index';
+import express, {Request, Response} from "express";
+import { userRoutes, taskRoutes, tagRoutes } from "./routes/index";
+import cors from "cors";
 
 const app = express();
 app.use(express.json());
 
-app.use('/api', userRoutes);
-app.use('/api', taskRoutes);
-app.use('/api', labelRoutes);
+const corsOptions = {
+  origin: "http://localhost:5173",
+  credentials: true, //
+};
+
+app.use(cors(corsOptions));
+app.use("/api", userRoutes);
+app.use("/api", taskRoutes);
+app.use("/api", tagRoutes);
 
 export default app;

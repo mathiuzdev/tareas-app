@@ -1,7 +1,13 @@
-import { Request, Response } from "express";
 import User from "../models/User";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import { registerSchema } from "../validations/index";
+import {
+  findUserByEmail,
+  generateToken,
+  validateLoginData,
+  verifyPassword,
+} from "../utils/authUtils";
+import { Request, Response } from "express";
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
@@ -9,17 +15,6 @@ export const getUsers = async (req: Request, res: Response) => {
     res.json(users);
   } catch (error) {
     res.status(500).json({ error: "Error fetching users" });
-  }
-};
-
-export const createUser = async (req: Request, res: Response) => {
-  try {
-    const { username, email, password } = req.body;
-    const user = await User.create({ username, email, password });
-    res.status(201).json(user);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error creating user" });
   }
 };
 
@@ -67,45 +62,49 @@ export const deleteUser = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = validateLoginData(req.body);
+    const user = await findUserByEmail(email);
+    await verifyPassword(password, user.password);
 
-    const user = await User.findOne({ where: { email } });
+    const userData = {
+      id: user.id,
+      email: user.email,
+      name: user.username,
+    };
 
-    if (user) {
-      const isMatch = await bcrypt.compare(password, user.password);
+    const token = generateToken(user.id, user.email);
 
-      if (isMatch) {
-        const userData = {
-          id: user.id,
-          email: user.email,
-          name: user.username,
-        };
-
-        const token = jwt.sign(
-          { id: user.id, email: user.email },
-          process.env.JWT_SECRET || "1234567",
-          { expiresIn: "1h" }
-        );
-
-        res.json({
-          token,
-          user: userData,
-        });
-      } else {
-        res.status(401).json({ error: "Incorrect username or password" });
-      }
-    } else {
-      res.status(401).json({ error: "Incorrect username or password" });
-    }
+    res.json({
+      token,
+      user: userData,
+    });
   } catch (error) {
     console.error("Login error:", error);
-    res.status(500).json({ error: "Error logging in" });
+    if (error instanceof Error) {
+      res
+        .status(error.message === "Incorrect username or password" ? 401 : 500)
+        .json({ error: error.message });
+    } else {
+      res.status(500).json({ error: "Unknown error" });
+    }
   }
 };
 
-export const register = async (req: Request, res: Response) => {
+export const register = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { username, email, password } = req.body;
+    const { error, value } = registerSchema.validate(req.body);
+    if (error) {
+      res.status(400).json({ error: error.details[0].message });
+      return;
+    }
+
+    const { username, email, password } = value;
+
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      res.status(409).json({ error: "Email already registered" });
+      return;
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -117,6 +116,7 @@ export const register = async (req: Request, res: Response) => {
 
     res.status(201).json(user);
   } catch (error) {
+    console.error("Register error:", error);
     res.status(500).json({ error: "Error registering user" });
   }
 };

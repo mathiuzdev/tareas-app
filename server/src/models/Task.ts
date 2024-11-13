@@ -1,33 +1,37 @@
-
-import { DataTypes, Model, Optional } from 'sequelize';
-import sequelize from '../config/database';
-import User from './User';
-import Label from './Label';
-import TaskLabel from './TaskLabel';
+import { DataTypes, Model, Optional } from "sequelize";
+import sequelize from "../config/database";
+import User from "./User";
+import Tag from "./Tag";
+import TaskTag from "./TaskTag";
 
 interface TaskAttributes {
   id: number;
   title: string;
   description: string;
-  due_date: Date;
+  dueDate: Date;
   status: string;
-  user_id: number;
+  userId: number;
+
 }
 
-interface TaskCreationAttributes extends Optional<TaskAttributes, 'id'> {}
 
-class Task extends Model<TaskAttributes, TaskCreationAttributes> implements TaskAttributes {
+interface TaskCreationAttributes extends Optional<TaskAttributes, "id"> {}
+
+class Task
+  extends Model<TaskAttributes, TaskCreationAttributes>
+  implements TaskAttributes
+{
   public id!: number;
   public title!: string;
   public description!: string;
-  public due_date!: Date;
+  public dueDate!: Date;
   public status!: string;
-  public user_id!: number;
+  public userId!: number;
+
+
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
-
-
 }
 
 Task.init(
@@ -45,31 +49,30 @@ Task.init(
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    due_date: {
+    dueDate: {
       type: DataTypes.DATE,
       allowNull: true,
     },
     status: {
-      type: DataTypes.STRING,
+      type: DataTypes.ENUM("pending", "in progress", "completed"),
       allowNull: false,
-      defaultValue: 'pending',
+      defaultValue: "pending",
     },
-    user_id: {
+    userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: User,
-        key: 'id',
+        key: "id",
       },
     },
   },
   {
     sequelize,
-    modelName: 'Task',
-    tableName: 'tasks',
+    modelName: "Task",
+    tableName: "tasks",
     timestamps: true,
   }
 );
-
 
 export default Task;

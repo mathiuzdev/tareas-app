@@ -1,19 +1,19 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database';
 import Task from './Task';
-import Label from './Label';
+import Tag from './Tag';
 
-class TaskLabel extends Model {
-  public task_id!: number;
-  public label_id!: number;
+class TaskTag extends Model {
+  public taskId!: number;
+  public tagId!: number;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
 
-TaskLabel.init(
+TaskTag.init(
   {
-    task_id: {
+    taskId: {
       type: DataTypes.INTEGER,
       references: {
         model: Task,
@@ -21,10 +21,10 @@ TaskLabel.init(
       },
       primaryKey: true,
     },
-    label_id: {
+    tagId: {
       type: DataTypes.INTEGER,
       references: {
-        model: Label,
+        model: Tag,
         key: 'id',
       },
       primaryKey: true,
@@ -32,12 +32,12 @@ TaskLabel.init(
   },
   {
     sequelize,
-    modelName: 'TaskLabel',
-    tableName: 'task_labels',
+    modelName: 'TaskTag',
+    tableName: 'task_tags',
     timestamps: true,
   }
 );
 
 
 
-export default TaskLabel;
+export default TaskTag;

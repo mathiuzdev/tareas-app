@@ -1,15 +1,15 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/database';
 
-interface LabelAttributes {
+interface TagAttributes {
   id: number;
   name: string;
   color: string;
 }
 
-interface LabelCreationAttributes extends Optional<LabelAttributes, 'id'> {}
+interface TagCreationAttributes extends Optional<TagAttributes, 'id'> {}
 
-class Label extends Model<LabelAttributes, LabelCreationAttributes> implements LabelAttributes {
+class Tag extends Model<TagAttributes, TagCreationAttributes> implements TagAttributes {
   public id!: number;
   public name!: string;
   public color!: string;
@@ -18,7 +18,7 @@ class Label extends Model<LabelAttributes, LabelCreationAttributes> implements L
   public readonly updatedAt!: Date;
 }
 
-Label.init(
+Tag.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -37,10 +37,10 @@ Label.init(
   },
   {
     sequelize,
-    modelName: 'Label',
-    tableName: 'labels',
+    modelName: 'Tag',
+    tableName: 'tags',
     timestamps: true,
   }
 );
 
-export default Label;
+export default Tag;

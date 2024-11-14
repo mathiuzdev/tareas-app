@@ -37,6 +37,8 @@ export const TagSelector: React.FC<TagSelectorProps> = ({
           sx={{
             "& .MuiOutlinedInput-root": {
               p: "4px",
+              pl: "14px", 
+              minHeight: "42px", 
               "& .MuiAutocomplete-input": {
                 px: 1,
                 py: "8px",
@@ -47,7 +49,8 @@ export const TagSelector: React.FC<TagSelectorProps> = ({
             ...params.InputProps,
             startAdornment: (
               <>
-                <TagIcon size={18} className="text-gray-400 ml-2 mr-1" />
+                  <TagIcon size={18} className="text-gray-400 absolute left-2" />
+
                 {params.InputProps.startAdornment}
               </>
             ),

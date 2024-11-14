@@ -19,7 +19,7 @@ export const TaskStatusFilter: React.FC<TaskStatusFilterProps> = ({
   onStatusChange,
 }) => {
   return (
-    <FormControl sx={{ width: "200px", maxWidth: "100%" }}>
+    <FormControl sx={{ width: "200px", maxWidth: "100%", my: 1, minWidth:"100%"}}>
       <Select
         value={status}
         onChange={onStatusChange}
@@ -30,24 +30,29 @@ export const TaskStatusFilter: React.FC<TaskStatusFilterProps> = ({
           },
           "& .MuiSelect-select": {
             p: "4px",
-            pl: "36px",
+            pl: "14px",
             minHeight: "42px",
             display: "flex",
             alignItems: "center",
           },
           "& .MuiOutlinedInput-root": {
+            p: "4px",
+            pl: "14px", 
+            minHeight: "42px", 
             "&:hover .MuiOutlinedInput-notchedOutline": {
               borderColor: "primary.main",
             },
+            borderRadius: 2,
           },
         }}
         startAdornment={
-          <Clock size={18} className="text-gray-400 absolute left-2" />
+          <Clock size={24} className="text-gray-400 absolute left-2" />
         }
         MenuProps={{
           PaperProps: {
             sx: {
               mt: 1,
+              borderRadius: 2,
               "& .MuiList-root": {
                 p: 1,
               },

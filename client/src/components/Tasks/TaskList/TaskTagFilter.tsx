@@ -29,7 +29,7 @@ export const TaskTagFilter: React.FC<TaskTagFilterProps> = ({
   };
 
   return (
-    <Box sx={{ width: "280px", maxWidth: "100%" }}>
+    <Box sx={{ width: "280px", maxWidth: "100%", my: 1 }}>
       <Autocomplete
         multiple
         options={tags}
@@ -54,16 +54,27 @@ export const TaskTagFilter: React.FC<TaskTagFilterProps> = ({
             sx={{
               "& .MuiOutlinedInput-root": {
                 p: "4px",
+                pl: "14px",
+                minHeight: "42px", 
                 "& .MuiAutocomplete-input": {
                   px: 1,
                 },
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "divider",
+                },
+                "&:hover .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "primary.main",
+                },
+                borderRadius: 2,
+                display: "flex",
+                alignItems: "center",
               },
             }}
             InputProps={{
               ...params.InputProps,
               startAdornment: (
                 <>
-                  <TagIcon size={18} className="text-gray-400 ml-2 mr-1" />
+                  <TagIcon size={18} className="text-gray-400 absolute left-2" />
                   {params.InputProps.startAdornment}
                 </>
               ),

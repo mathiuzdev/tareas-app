@@ -30,7 +30,6 @@ export const TaskStatusFilter: React.FC<TaskStatusFilterProps> = ({
           },
           "& .MuiSelect-select": {
             p: "4px",
-            pl: "14px",
             minHeight: "42px",
             display: "flex",
             alignItems: "center",

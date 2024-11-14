@@ -42,7 +42,7 @@ const RegisterForm: React.FC = () => {
         borderRadius: 2,
         boxShadow: 3,
         bgcolor: 'background.paper',
-        mt:16
+        my: 'auto',
       }}
     >
       <UserPlus size={48} className="mb-4 text-primary" />

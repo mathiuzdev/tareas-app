@@ -17,7 +17,7 @@ const router = express.Router();
  */
 /**
  * @swagger
- * /tags:
+ * /api/tags:
  *   get:
  *     summary: Get all tags
  *     description: Returns a list of all tags.
@@ -34,7 +34,7 @@ router.get("/tags", authenticateJWT, getTags);
 
 /**
  * @swagger
- * /tags:
+ * /api/tags:
  *   post:
  *     summary: Create a new tag
  *     description: Allows you to create a new tag.
@@ -51,6 +51,9 @@ router.get("/tags", authenticateJWT, getTags);
  *               name:
  *                 type: string
  *                 description: The name of the tag.
+ *               color:
+ *                 type: string
+ *                 description: The color of the tag.
  *     responses:
  *       201:
  *         description: Tag created successfully.
@@ -63,7 +66,7 @@ router.post("/tags", authenticateJWT, createTag);
 
 /**
  * @swagger
- * /tags/{id}:
+ * /api/tags/{id}:
  *   get:
  *     summary: Get a tag by ID
  *     description: Returns the details of a specific tag.
@@ -74,7 +77,7 @@ router.post("/tags", authenticateJWT, createTag);
  *         required: true
  *         description: ID of the tag to retrieve.
  *         schema:
- *           type: string
+ *           type: number
  *     responses:
  *       200:
  *         description: Tag details retrieved successfully.
@@ -87,7 +90,7 @@ router.get("/tags/:id", getTagById);
 
 /**
  * @swagger
- * /tags/{id}:
+ * /api/tags/{id}:
  *   put:
  *     summary: Update a tag by ID
  *     description: Allows you to update the details of an existing tag.
@@ -98,7 +101,7 @@ router.get("/tags/:id", getTagById);
  *         required: true
  *         description: ID of the tag to update.
  *         schema:
- *           type: string
+ *           type: number
  *     requestBody:
  *       required: true
  *       content:
@@ -109,6 +112,9 @@ router.get("/tags/:id", getTagById);
  *               name:
  *                 type: string
  *                 description: The new name of the tag.
+ *               color:
+ *                 type: string
+ *                 description: The new color of the tag.
  *     responses:
  *       200:
  *         description: Tag updated successfully.
@@ -123,7 +129,7 @@ router.put("/tags/:id", updateTag);
 
 /**
  * @swagger
- * /tags/{id}:
+ * /api/tags/{id}:
  *   delete:
  *     summary: Delete a tag by ID
  *     description: Allows you to delete a specific tag.
@@ -134,7 +140,7 @@ router.put("/tags/:id", updateTag);
  *         required: true
  *         description: ID of the tag to delete.
  *         schema:
- *           type: string
+ *           type: number
  *     responses:
  *       200:
  *         description: Tag deleted successfully.

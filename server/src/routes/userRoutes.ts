@@ -20,7 +20,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /users:
+ * /api/users:
  *   get:
  *     summary: Get all users
  *     tags: [Users]
@@ -48,7 +48,7 @@ router.get("/users", authenticateJWT, getUsers);
 
 /**
  * @swagger
- * /users/{id}:
+ * /api/users/{id}:
  *   get:
  *     summary: Get a user by ID
  *     tags: [Users]
@@ -59,7 +59,7 @@ router.get("/users", authenticateJWT, getUsers);
  *         in: path
  *         required: true
  *         schema:
- *           type: string
+ *           type: number
  *     responses:
  *       200:
  *         description: User information
@@ -69,7 +69,7 @@ router.get("/users", authenticateJWT, getUsers);
  *               type: object
  *               properties:
  *                 id:
- *                    type: string
+ *                    type: number
  *                 username:
  *                    type: string
  *                 email:
@@ -82,7 +82,7 @@ router.get("/users/:id", authenticateJWT, getUserById);
 
 /**
  * @swagger
- * /users/{id}:
+ * /api/users/{id}:
  *   put:
  *     summary: Update a user by ID
  *     tags: [Users]
@@ -93,7 +93,7 @@ router.get("/users/:id", authenticateJWT, getUserById);
  *         in: path
  *         required: true
  *         schema:
- *           type: string
+ *           type: number
  *     requestBody:
  *       required: true
  *       content:
@@ -114,7 +114,7 @@ router.get("/users/:id", authenticateJWT, getUserById);
  *               type: object
  *               properties:
  *                 id:
- *                    type: string
+ *                    type: number
  *                 username:
  *                    type: string
  *                 email:
@@ -127,7 +127,7 @@ router.put("/users/:id", authenticateJWT, updateUser);
 
 /**
  * @swagger
- * /users/{id}:
+ * /api/users/{id}:
  *   delete:
  *     summary: Delete a user by ID
  *     tags: [Users]
@@ -138,7 +138,7 @@ router.put("/users/:id", authenticateJWT, updateUser);
  *         in: path
  *         required: true
  *         schema:
- *           type: string
+ *           type: number
  *     responses:
  *       204:
  *         description: User deleted successfully
@@ -147,7 +147,7 @@ router.delete("/users/:id", authenticateJWT, deleteUser);
 
 /**
  * @swagger
- * /user/login:
+ * /api/user/login:
  *   post:
  *     summary: User login
  *     tags: [Users]
@@ -177,7 +177,7 @@ router.post("/user/login", login);
 
 /**
  * @swagger
- * /user/register:
+ * /api/user/register:
  *   post:
  *     summary: Register a new user
  *     tags: [Users]

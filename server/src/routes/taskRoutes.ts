@@ -19,7 +19,7 @@ const router = express.Router();
  */
 /**
  * @swagger
- * /tasks:
+ * /api/tasks:
  *   get:
  *     summary: Get all tasks
  *     description: Returns a list of all tasks.
@@ -36,7 +36,7 @@ router.get("/tasks", authenticateJWT, getTasks);
 
 /**
  * @swagger
- * /tasks:
+ * /api/tasks:
  *   post:
  *     summary: Create a new task
  *     description: Allows you to create a new task.
@@ -57,10 +57,12 @@ router.get("/tasks", authenticateJWT, getTasks);
  *               dueDate:
  *                 type: string
  *                 format: date
+ *               status:
+ *                 type: string
  *               tags:
  *                 type: array
  *                 items:
- *                   type: string
+ *                   type: object
  *     responses:
  *       201:
  *         description: Task created successfully.
@@ -73,7 +75,7 @@ router.post("/tasks", authenticateJWT, createTask);
 
 /**
  * @swagger
- * /tasks/addTag:
+ * /api/tasks/addTag:
  *   post:
  *     summary: Add a tag to a task
  *     description: Allows you to add a tag to an existing task.
@@ -88,9 +90,9 @@ router.post("/tasks", authenticateJWT, createTask);
  *             type: object
  *             properties:
  *               taskId:
- *                 type: string
+ *                 type: number
  *               tag:
- *                 type: string
+ *                 type: number
  *     responses:
  *       200:
  *         description: Tag added successfully to the task.
@@ -103,7 +105,7 @@ router.post("/tasks/addTag", authenticateJWT, addTagToTask);
 
 /**
  * @swagger
- * /tasks/{id}:
+ * /api/tasks/{id}:
  *   get:
  *     summary: Get a task by ID
  *     description: Returns the details of a specific task.
@@ -116,7 +118,7 @@ router.post("/tasks/addTag", authenticateJWT, addTagToTask);
  *         required: true
  *         description: ID of the task to retrieve.
  *         schema:
- *           type: string
+ *           type: number
  *     responses:
  *       200:
  *         description: Task details retrieved successfully.
@@ -129,7 +131,7 @@ router.get("/tasks/:id", authenticateJWT, getTaskById);
 
 /**
  * @swagger
- * /tasks/{id}:
+ * /api/tasks/{id}:
  *   put:
  *     summary: Update a task by ID
  *     description: Allows you to update the details of an existing task.
@@ -157,10 +159,12 @@ router.get("/tasks/:id", authenticateJWT, getTaskById);
  *               dueDate:
  *                 type: string
  *                 format: date
+ *               status:
+ *                type: string
  *               tags:
  *                 type: array
  *                 items:
- *                   type: string
+ *                   type: object
  *     responses:
  *       200:
  *         description: Task updated successfully.
@@ -175,7 +179,7 @@ router.put("/tasks/:id", authenticateJWT, updateTask);
 
 /**
  * @swagger
- * /tasks/{id}:
+ * /api/tasks/{id}:
  *   delete:
  *     summary: Delete a task by ID
  *     description: Allows you to delete a specific task.
@@ -188,7 +192,7 @@ router.put("/tasks/:id", authenticateJWT, updateTask);
  *         required: true
  *         description: ID of the task to delete.
  *         schema:
- *           type: string
+ *           type: number
  *     responses:
  *       200:
  *         description: Task deleted successfully.
@@ -201,7 +205,7 @@ router.delete("/tasks/:id", authenticateJWT, deleteTask);
 
 /**
  * @swagger
- * /tasks/removeTag:
+ * /api/tasks/removeTag:
  *   patch:
  *     summary: Remove a tag from a task
  *     description: Allows you to remove a tag from an existing task.
@@ -216,9 +220,9 @@ router.delete("/tasks/:id", authenticateJWT, deleteTask);
  *             type: object
  *             properties:
  *               taskId:
- *                 type: string
+ *                 type: number
  *               tag:
- *                 type: string
+ *                 type: number
  *     responses:
  *       200:
  *         description: Tag successfully removed from the task.

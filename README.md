@@ -77,28 +77,8 @@ NODE_ENV=<enviroment_mode> # Environment mode (e.g., development, production)
 
     `yarn install`
 
-1. **Start the server in development mode**: To start the server with hot-reloading, run:
+1. **Run migrations** (Required before starting the server):
 
-    `npm run dev`
-
-    Or if using yarn:
-
-    `yarn dev`
-
-The server will be available at [http://localhost:PORT/](http://localhost:PORT/).
-1. **Start the server in production mode**: To run the server in production mode, first build the TypeScript files and then start the server:
-
-    `npm run build`
-
-    `npm start`
-
-    Or if using yarn:
-
-    `yarn build`
-
-    `yarn start`
-
-1. **Database Migrations**:  You can run migrations as follows. 
     To apply migrations:
 
     `npm run migrate`
@@ -115,13 +95,39 @@ The server will be available at [http://localhost:PORT/](http://localhost:PORT/)
 
     `yarn migrate:undo`
 
-1. **Seed the database**: If you need to insert example data into the database:
+1. **Start the server in development mode**: To run the server in development mode:
+
+    `npm run dev`
+
+    Or if using yarn:
+
+    `yarn dev`
+
+    The server will be available at [http://localhost:PORT/](http://localhost:PORT/).
+
+1. **Start the server in production mode**: To run the server in production mode, first build the TypeScript files and then start the server:
+    
+    `npm run build`
+
+    `npm start`
+
+    Or if using yarn:
+
+    `yarn build`
+
+    `yarn start`
+
+1. **Seed the database**: (Optional)
+    
+    If you need to insert example data into the database, you can use the seed command. This will add sample data, such as users, tasks, and tags, to help you get started.
 
     `npm run seed`
 
     Or if using yarn:
 
     `yarn seed`
+    
+    **Example of Seed Data**: The seed data includes example users, basic tasks, and tags. You can find the seed data definitions in the project under the `src/database/seeders/*.js` directory. This sample data is helpful for testing purposes.
 
 ## 4. Testing
 #### Client
@@ -139,7 +145,7 @@ Or if using yarn:
 
 Access the interactive API documentation at the following URL:
 
-[http://localhost:PORT/api](http://localhost:PORT/api) (SERVER)
+[http://localhost:PORT/api](http://localhost:PORT/api) (To enter, have the server running)
 
 From this page, you can explore all the API endpoints and test them directly from your browser.
 

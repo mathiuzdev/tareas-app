@@ -67,11 +67,13 @@ export const CreateTaskForm = forwardRef<HTMLDivElement, CreateTaskFormProps>(
         tabIndex={-1}
         sx={{
           width: { xs: "90%", sm: 500 },
+          maxWidth: "100%",
+          maxHeight: "90vh", 
+          overflowY: "auto", 
           bgcolor: "background.paper",
           borderRadius: 2,
           boxShadow: 3,
           mx: "auto",
-          overflow: "hidden",
         }}
       >
         <Box
@@ -104,7 +106,7 @@ export const CreateTaskForm = forwardRef<HTMLDivElement, CreateTaskFormProps>(
           )}
         </Box>
 
-        <Box sx={{ p: 3, display: "flex", flexDirection: "column", gap: 2.5 }}>
+        <Box sx={{ p: { xs: 2, sm: 3 }, display: "flex", flexDirection: "column", gap: 2.5 }}>
           <TextField
             fullWidth
             name="title"
@@ -128,9 +130,7 @@ export const CreateTaskForm = forwardRef<HTMLDivElement, CreateTaskFormProps>(
             rows={3}
             value={formik.values.description}
             onChange={formik.handleChange}
-            error={
-              formik.touched.description && Boolean(formik.errors.description)
-            }
+            error={formik.touched.description && Boolean(formik.errors.description)}
             helperText={formik.touched.description && formik.errors.description}
             sx={{
               "& .MuiOutlinedInput-root": {
@@ -164,9 +164,7 @@ export const CreateTaskForm = forwardRef<HTMLDivElement, CreateTaskFormProps>(
               displayEmpty
               renderValue={(value) => (
                 <Typography color={value ? "text.primary" : "text.secondary"}>
-                  {value
-                    ? value.charAt(0).toUpperCase() + value.slice(1)
-                    : "Select Status"}
+                  {value ? value.charAt(0).toUpperCase() + value.slice(1) : "Select Status"}
                 </Typography>
               )}
               sx={{
@@ -195,6 +193,7 @@ export const CreateTaskForm = forwardRef<HTMLDivElement, CreateTaskFormProps>(
             type="submit"
             variant="contained"
             disabled={formik.isSubmitting}
+            fullWidth={true}
             startIcon={<Plus size={20} />}
             sx={{
               mt: 1,

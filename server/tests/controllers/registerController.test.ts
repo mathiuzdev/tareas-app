@@ -27,7 +27,7 @@ describe("POST /api/user/register", () => {
     const newUser = {
       username: "waera amor",
       email: "luna@gmail.com",
-      password: "Jeropita123$",
+      password: "zxczqrq",
     };
 
     User.create = jest.fn().mockResolvedValue({
